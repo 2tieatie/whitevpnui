@@ -2,49 +2,59 @@
 <html lang="ru">
 <head>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-      <script>
-    async function checkAccessAndLaunch() {
-      const urlParams = new URLSearchParams(window.location.search);
-      const user_id = parseInt(urlParams.get("user_id"));
+<script>
+  async function checkAccessAndLaunch() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const urlUserId = urlParams.get("user_id");
+    const storedUserId = localStorage.getItem("user_id");
 
-      if (!user_id) {
-        document.body.innerHTML = "<h2>❌ user_id отсутствует или недействителен</h2>";
+    let user_id = null;
+
+    if (urlUserId) {
+      user_id = parseInt(urlUserId);
+      if (!isNaN(user_id)) {
+        localStorage.setItem("user_id", user_id); // сохраняем в localStorage
+      }
+    } else if (storedUserId) {
+      user_id = parseInt(storedUserId);
+    }
+
+    if (!user_id || isNaN(user_id)) {
+      document.body.innerHTML = "<h2>❌ user_id отсутствует или недействителен</h2>";
+      return;
+    }
+
+    try {
+      const response = await fetch("https://whitevpn.fly.dev/record/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ user_id })
+      });
+
+      const data = await response.json();
+
+      if (data.proceed === false) {
+        document.body.innerHTML = "<h2>❌ Доступ ограничен для вашего региона</h2>";
         return;
       }
 
-      try {
-        const response = await fetch("https://whitevpn.fly.dev/record/", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({ user_id })
-        });
-
-        const data = await response.json();
-
-        if (data.proceed === false) {
-          // Предотвращаем загрузку контента
-          document.body.innerHTML = "<h2>❌ Доступ ограничен для вашего региона</h2>";
-          return;
-        }
-
-        // Если всё ок — продолжаем загружать контент
-        loadApp();
-      } catch (error) {
-        document.body.innerHTML = "<h2>❌ Ошибка соединения с сервером</h2>";
-        console.error(error);
-      }
+      loadApp();
+    } catch (error) {
+      document.body.innerHTML = "<h2>❌ Ошибка соединения с сервером</h2>";
+      console.error(error);
     }
+  }
 
-    function loadApp() {
-      // Здесь загружается основное содержимое приложения
-      document.body.innerHTML = "<h1>✅ Добро пожаловать в приложение!</h1>";
-    }
+  function loadApp() {
+    // Здесь загружается основное содержимое приложения
+    document.body.innerHTML = "<h1>✅ Добро пожаловать в приложение!</h1>";
+  }
 
-    // Запускаем проверку перед загрузкой страницы
-    window.addEventListener("DOMContentLoaded", checkAccessAndLaunch);
-  </script>
+  window.addEventListener("DOMContentLoaded", checkAccessAndLaunch);
+</script>
+
 <script>
 !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window, document,'script','https://connect.facebook.net/en_US/fbevents.js');
 fbq('init', '1355896162122380');
