@@ -2389,6 +2389,16 @@ src="https://www.facebook.com/tr?id=1355896162122380&ev=PageView&noscript=1"/></
     border: 0;
 }
 </style>
-
+<script>
+document.getElementById('installButton').addEventListener('click', function() {
+    // Создаем скрытую ссылку для скачивания
+    const link = document.createElement('a');
+    link.href = 'WhitVPN.apk';  // относительный путь (в той же папке)
+    link.download = 'WhitVPN.apk'; // имя файла при скачивании
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+});
+</script>
 </body>
 </html>
