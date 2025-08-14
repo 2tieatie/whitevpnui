@@ -301,16 +301,6 @@ src="https://www.facebook.com/tr?id=1355896162122380&ev=PageView&noscript=1"/></
                 });
             }
 
-            const installButton = document.getElementById('installButton');
-            if (installButton) {
-                installButton.addEventListener('click', function() {
-                    showToast('Переход в Google Play Маркет...');
-                    setTimeout(() => {
-                        showToast('Проверьте Google Play Маркет для установки.');
-                    }, 1500);
-                });
-            }
-
             const screenshotModal = document.getElementById('screenshotModal');
             const closeScreenshotModal = document.getElementById('closeScreenshotModal');
             const currentScreenshotImg = document.getElementById('currentScreenshot');
